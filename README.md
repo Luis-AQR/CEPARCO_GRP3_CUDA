@@ -64,7 +64,7 @@ Store the result in vector $Z$. Display the execution time, the first 5, and the
 | x86-64 SIMD YMM | [avg \| min \| max] | [value] |
 | CUDA Unified (No Prefetch/Advise) | [0.836048 \| 0.831090 \| 101.798247] | [28.44] |
 | CUDA Prefetch (No Page Creation) | [avg \| min \| max] | [value] |
-| CUDA Prefetch + Page Creation | 256: [0.770405 \| 0.768544 \| 0.772672]<br>512: [0.775305 \| 0.772448 \| 0.784384]<br>1024: [0.782987 \| 0.780864 \| 0.791168] | 256: [30.87]<br>512: [30.67]<br>1024: [30.37] |
+| CUDA Prefetch + Page Creation | [avg \| min \| max] | [value] |
 | CUDA Prefetch + Page Creation + Mem Advise| [avg \| min \| max] | [value] |
 
 *(Note: Add more tables if needed for different vector sizes or block sizes)*
@@ -97,25 +97,36 @@ Store the result in vector $Z$. Display the execution time, the first 5, and the
 ---
 
 ## V. Experience and Methodology
-*(Discuss the problems encountered and solutions made, unique methodology used, AHA moments, etc.)*
+   Comparing the traditional CPU approach with the four GPU implementations shows a dramatic speed improvement when moving to graphics card processing. The standard CPU implementation takes roughly around 23.65 ms to process 16.77 million data elements. By contrast, even a basic GPU configuration drops that time down to around 0.84 ms, which gives us around a 28x speedup. This massive difference happens because GPUs contain thousands of processing cores working simultaneously, making them exceptionally efficient at running simple math calculations across massive batches of data.
 
-[Discuss your team's experience, roadblocks, debugging processes, and any specific insights gained during development.]
+   However, getting peak performance out of a GPU requires carefully managing how memory moves between the computer's system RAM and the graphics card. In the basic GPU setup, the graphics card constantly pauses execution to request data on-demand, causing a huge initial delay of over 100 ms on the very first run. By prefetching the data, telling the system to transfer all necessary information to the graphics card before the calculations begin, this startup lag is completely eliminated, bringing execution time down.
+	
+   It is also worth mentioning the group’s realization, upon testing the outputs, that the outputs might be varying due to our personal machines' speed, even when running the same code. Eventually, we decided to just keep the outputs the same as the ones that made them. This is worth taking into account, as it would probably be a reason for having ‘weird’ comparisons in the outputs. This was also evident in the previous SIMD project, and it helped us realize this factor.
 
 ---
 
 ## VI. SIMD vs SIMT Handling Parallelism
-*(Discuss, based on your experience on the particular project use case, the differences between SIMD and SIMT in handling parallelism. Include also the PROS and CONS of using SIMD and SIMT in your use case.)*
 
-**Differences:**
-[Discuss architectural and practical differences observed...]
+   While CPU vector processing (SIMD) and GPU parallel execution (SIMT) both process multiple data values at once, they handle the execution differently. SIMD relies on a single CPU core issuing one vector instruction that acts on a fixed block of packed data registers. On the other hand, SIMT uses thousands of lightweight threads running the same program across independent lanes, where the GPU hardware automatically manages instruction issuing, thread grouping, and branch execution. In practice, SIMD is ideal for low-latency sequential logic with mild vectorization, while SIMT excels at massive data-parallel workloads like vector math, though performance drops significantly if memory transfers aren't properly managed.
+   
+SIMD (Single Instruction, Multiple Data)
+PROS:
+* Lower latency for individual operations
+* No need to move data back and forth over a PCIe bus since memory stays on system RAM.
+* Predictable execution without the overhead of managing thousands of concurrent threads.
+CONS:
+* Limited core count and smaller vector widths yield much lower total throughput for massive datasets.
+* Constrained by CPU memory bandwidth limits when processing millions of elements.
+  
+SIMT (Single Instruction, Multiple Threads)
+PROS:
+* Massive thread parallelism that provides high speedups on memory-heavy vector math.
+* Hardware automatically hides latency by switching to another thread group when one group is waiting on memory.
+* Easily scales across large datasets using simple grid loops without needing manual vector register instructions.
+CONS:
+* Suffers high performance penalties if memory isn't prefetched or managed properly.
+* Complex branching or conditional logic inside threads can slow down overall execution speed.
 
-**SIMD (Single Instruction, Multiple Data)**
-* **PROS:** [List pros...]
-* **CONS:** [List cons...]
-
-**SIMT (Single Instruction, Multiple Threads)**
-* **PROS:** [List pros...]
-* **CONS:** [List cons...]
 
 
 
