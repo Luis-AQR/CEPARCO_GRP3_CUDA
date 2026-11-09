@@ -62,7 +62,7 @@ Store the result in vector $Z$. Display the execution time, the first 5, and the
 | x86-64 | [ \| min \| max] | [value] |
 | x86-64 SIMD XMM | [avg \| min \| max] | [value] |
 | x86-64 SIMD YMM | [avg \| min \| max] | [value] |
-| CUDA Unified (No Prefetch/Advise) | [avg \| min \| max] | [value] |
+| CUDA Unified (No Prefetch/Advise) | [0.836048 \| 0.831090 \| 101.798247] | [28.44] |
 | CUDA Prefetch (No Page Creation) | [avg \| min \| max] | [value] |
 | CUDA Prefetch + Page Creation | [avg \| min \| max] | [value] |
 | CUDA Prefetch + Page Creation + Mem Advise| [avg \| min \| max] | [value] |
