@@ -62,7 +62,7 @@ Store the result in vector $Z$. Display the execution time, the first 5, and the
 | x86-64 | avg: 9.132447 | 2.60 |
 | x86-64 SIMD XMM | avg: 7.635550 | 3.11 |
 | x86-64 SIMD YMM | avg: 7.358211 | 3.23 |
-| CUDA Unified (No Prefetch/Advise) | [0.836048 \| 0.831090 \| 101.798247] | 28.44 |
+| CUDA Unified (No Prefetch/Advise) | 256: [0.838689 \| 0.831475 \| 57.134721]<br>512: [0.868808 \|0.825134  \|1.834849]<br>1024: [0.838875 \| 0.819731 \|0.969434] | 256: [28.35]<br>512: [27.37]<br>1024: [28.35] | |
 | CUDA Prefetch (No Page Creation) | [avg \| min \| max] | [value] |
 | CUDA Prefetch + Page Creation | 256: [0.770405 \| 0.768544 \| 0.772672]<br>512: [0.775305 \| 0.772448 \| 0.784384]<br>1024: [0.782987 \| 0.780864 \| 0.791168] | 256: 30.87<br>512: 30.67<br>1024: 30.37 |
 | CUDA Prefetch + Page Creation + Mem Advise| 256: [0.768346 \|0.766688 \| 0.770048]<br>512: [0.782662 \| 0.776192 \| 0.789248]<br>1024: [0.780159 \| 0.778240 \| 0.783872] | 256: 30.78<br>512: 30.22<br>1024: 30.31|
