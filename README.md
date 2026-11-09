@@ -111,7 +111,18 @@ The CUDA/SIMT platform performed the best because AXPY is a parallel, memory-ban
 ### 3. Impact of Block Size
 **Question:** How does block size affect execution time (observing various elements and using max blocks)? Which block size will you recommend?
 
-[Provide your analysis and recommendation here...]
+Block size had only a small effect on kernel time, and smaller blocks were slightly faster. We recommend 256 threads per block.
+
+For 2^24 elements (CUDA Prefetch + Page Creation, avg kernel time):
+| **Block size** | **Avg (ms)** |
+|---|---|
+| 256 | 0.770 |
+| 512 | 0.775 |
+| 1024 | 0.783 |
+
+Moving from 256 to 1024 threads per block increased the average time by only about 1.7%. Every launch used the maximum number of blocks for its size, `numBlocks = (N + numThreads - 1) / numThreads`, so bigger blocks mean fewer blocks. The T4 (compute capability 7.5) allows at most 1024 resident threads and 16 blocks per Streaming Multiprocessor (SM). With 1024 threads per block, only 1 block fits per SM. When that block finishes or stalls, there is little else to schedule.With 256 threads per block, 4 blocks fit per SM. The scheduler has more independent warps to hide memory latency and fill the SM.
+
+**Recommendation**: 256 threads per block. It was marginally fastest, gives 4 resident blocks per SM on the T4, and is not tied to the 1024-thread limit. The grid-stride loop keeps the kernel correct whatever block size or block count is used.
 
 ### 4. Memory Management: Prefetching vs. CUDA Managed
 **Question:** Is prefetching always recommended, or should CUDA manage memory? Give some use cases in which one is better than the other.
