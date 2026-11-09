@@ -29,6 +29,9 @@ Store the result in vector $Z$. Display the execution time, the first 5, and the
    
 ## AI Usage Declaration
 
+Gemini - Debug and check outputs of code
+Grammarly - Spelling and Grammar checks, used in the README.md file
+
 ---
 
 ## I. Program Output and Correctness Check
@@ -92,10 +95,18 @@ Store the result in vector $Z$. Display the execution time, the first 5, and the
 ## IV. Analysis of Results
 
 ### 1. Analysis of Kernel Execution Time
-[Discuss the execution times observed across the different CUDA variants and baseline programs. Identify trends, minimums, maximums, and averages.]
+Across the evaluated implementations processing 2^24 elements, execution times strictly demonstrate the performance advantages of GPU execution and data prefetching over baseline CPU processing. The standard C baseline program posted an average execution time of 23.78 ms (with a minimum of 19.30 ms and a maximum of 28.23 ms).   
+
+When moving to GPU variants, execution time drops dramatically. For the basic CUDA Unified Memory implementation, warm execution runs average between 0.838 ms and 0.868 ms depending on block size. However, this variant exhibits a severe maximum execution spike up to 57.13 ms (and up to 101.8 ms as noted in memory analysis) on its first run due to page migration overhead triggered on-demand by GPU page faults.   
+
+In contrast, enabling prefetching completely eliminates this initial latency penalty by migrating pages to GPU VRAM prior to launch. Across block sizes 256, 512, and 1024, the prefetch variants maintain highly consistent execution times ranging from an average of 0.768 ms to 0.783 ms, with maximum times capped below 0.792 ms. Adding explicit memory hints, the cudaMemAdvise produces virtually identical performance (0.768 ms to 0.782 ms average), confirming that while memory advice provides explicit hints to the unified memory driver, prefetching alone is the main driver in achieving optimal kernel performance.   
 
 ### 2. Analysis of Speed Performance Across All Platforms
-[Compare the speedup across C, x86-64, SIMD (XMM/YMM), and the CUDA variants. Which platform performed the best and why?]
+Upon comparing speedups relative to the baseline C program, GPU execution using SIMT substantially outperforms all CPU platforms. On the CPU side, scalar x86-64 execution provides a 2.60x speedup, while SIMD vectorization yields incremental gains—achieving 3.11x speedup with SIMD XMM and 3.23x speedup with SIMD YMM.   
+
+The CUDA GPU implementations demonstrate a better overall throughput, achieving speedups ranging from 27.37x to 30.87x over baseline C. The highest overall performance is achieved by the CUDA Prefetch, with the Page Creation variant at a block size of 256, delivering a peak of 30.87x speedup, closely matched by the variant with cudaMemAdvise at 30.78x speedup.   
+
+The CUDA/SIMT platform performed the best because AXPY is a parallel, memory-bandwidth-bound workload with zero data dependencies between vector elements. While CPU SIMD registers can process 4 to 8 float elements per instruction on a handful of cores, the GPU harnesses thousands of parallel CUDA threads executing across multiple Streaming Multiprocessors. When combined with prefetching, the GPU avoids host-device page faulting delays and fully leverages its high DRAM bandwidth to complete the 16.77 million element vector operations in less than one millisecond.  
 
 ### 3. Impact of Block Size
 **Question:** How does block size affect execution time (observing various elements and using max blocks)? Which block size will you recommend?
