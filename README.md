@@ -101,7 +101,11 @@ Store the result in vector $Z$. Display the execution time, the first 5, and the
 ### 5. SIMD vs SIMT Performance
 **Question:** Between SIMD and SIMT, which one is faster? Give some use cases in which one is better than the other.
 
-[Provide your comparison and use cases here...]
+   In this AXPY project, SIMT (CUDA) was much faster than SIMD. The best SIMD result was YMM at around 7.36 ms, which is only about 3.23x faster than the C version. The CUDA versions ran at around 0.77 to 0.84 ms, which is about 28x to 31x faster than C. That makes the GPU roughly 9 to 10 times faster than our best SIMD version. It is because AXPY is simple math done on 16.7 million elements, and each element is independent of the others. A GPU has thousands of threads that can each handle a few elements at the same time, while SIMD on the CPU can only process 4 floats (XMM) or 8 floats (YMM) per instruction.
+
+   SIMT is better when the data is very large and every element can be computed on its own, such as vector math, image processing, and matrix operations. It also works best when the data is already on the GPU or can be prefetched, so memory transfer does not slow it down.
+
+   SIMD is better when the data is small, because the GPU has overhead (like the first-run delay that is seen in the unified memory version) that may not be worth it for a small array. It is also better when the program needs low latency or has a lot of branching and sequential logic, since SIMD stays on the CPU and there is no data transfer to the graphics card. Lastly, it is the practical choice when a GPU is not available or the rest of the program already runs on the CPU. For big, simple, data-parallel work like AXPY, SIMT is the better choice. For small data or logic-heavy work, SIMD on the CPU is still a good option.
 
 ---
 
