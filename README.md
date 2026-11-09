@@ -57,9 +57,9 @@ Store the result in vector $Z$. Display the execution time, the first 5, and the
 
 | 2^24 elements | | |
 | :--- | :--- | :--- |
-| **CUDA block size = [256 \| 512 \| 1024]** | **Kernel time [avg \| min \| max]** | **Speedup vs baseline C program** |
-| C | [avg \| min \| max] | N/A |
-| x86-64 | [avg \| min \| max] | [value] |
+| **CUDA block size = [256 \| 512 \| 1024]** | **Kernel time [avg \| min \| max] in ms** | **Speedup vs baseline C program** |
+| C | [23.780529 \| 19.297711 \| 28.231964] | N/A |
+| x86-64 | [ \| min \| max] | [value] |
 | x86-64 SIMD XMM | [avg \| min \| max] | [value] |
 | x86-64 SIMD YMM | [avg \| min \| max] | [value] |
 | CUDA Unified (No Prefetch/Advise) | [avg \| min \| max] | [value] |
