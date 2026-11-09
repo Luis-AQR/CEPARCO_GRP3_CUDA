@@ -59,15 +59,13 @@ Store the result in vector $Z$. Display the execution time, the first 5, and the
 | :--- | :--- | :--- |
 | **CUDA block size = [256 \| 512 \| 1024]** | **Kernel time [avg \| min \| max] in ms** | **Speedup vs baseline C program** |
 | C | [23.780529 \| 19.297711 \| 28.231964] | N/A |
-| x86-64 | [ \| min \| max] | [value] |
-| x86-64 SIMD XMM | [avg \| min \| max] | [value] |
-| x86-64 SIMD YMM | [avg \| min \| max] | [value] |
-| CUDA Unified (No Prefetch/Advise) | [0.836048 \| 0.831090 \| 101.798247] | [28.44] |
+| x86-64 | avg: 9.132447 | 2.60 |
+| x86-64 SIMD XMM | avg: 7.635550 | 3.11 |
+| x86-64 SIMD YMM | avg: 7.358211 | 3.23 |
+| CUDA Unified (No Prefetch/Advise) | [0.836048 \| 0.831090 \| 101.798247] | 28.44 |
 | CUDA Prefetch (No Page Creation) | [avg \| min \| max] | [value] |
-| CUDA Prefetch + Page Creation | 256: [0.770405 \| 0.768544 \| 0.772672]<br>512: [0.775305 \| 0.772448 \| 0.784384]<br>1024: [0.782987 \| 0.780864 \| 0.791168] | 256: [30.87]<br>512: [30.67]<br>1024: [30.37] |
-| CUDA Prefetch + Page Creation + Mem Advise| [avg \| min \| max] | [value] |
-
-*(Note: Add more tables if needed for different vector sizes or block sizes)*
+| CUDA Prefetch + Page Creation | 256: [0.770405 \| 0.768544 \| 0.772672]<br>512: [0.775305 \| 0.772448 \| 0.784384]<br>1024: [0.782987 \| 0.780864 \| 0.791168] | 256: 30.87<br>512: 30.67<br>1024: 30.37 |
+| CUDA Prefetch + Page Creation + Mem Advise| 256: [0.768346\|0.766688\|0.770048]<br>512: [0.782662\|0.776192|0.789248]<br>1024: [0.780159\|0.778240|0.783872] | 256: 30.78<br>512: 30.22<br>1024: 30.31|
 
 ---
 
