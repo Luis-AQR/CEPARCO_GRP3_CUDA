@@ -85,7 +85,24 @@ Store the result in vector $Z$. Display the execution time, the first 5, and the
 ### 4. Memory Management: Prefetching vs. CUDA Managed
 **Question:** Is prefetching always recommended, or should CUDA manage memory? Give some use cases in which one is better than the other.
 
-[Provide your analysis and use cases here...]
+Prefetching is not always recommended, but for our AXPY kernel it is the better choice.
+
+With plain `cudaMallocManaged`, pages migrate on demand. When the kernel touches a page that is still on the CPU, the GPU stalls those threads while the Page Migration Engine moves the page. That migration cost lands inside the kernel time. In our 2^24 results, the CUDA Unified variant had a maximum kernel time of 101.798 ms. Its minimum was 0.831 ms, so the first launch was about 120 times slower than steady state. With prefetching, the maximum dropped to about 0.78 ms. `cudaMemPrefetchAsync` moves the data in bulk before the launch, so the kernel never waits on page faults.
+
+**Prefetching is better when**:
+
+- The host initializes the data once and the GPU then reads it, as in AXPY, where `X` and `Y` are filled on the CPU and consumed by the kernel.
+- The kernel is launched many times on the same data, or the data is large (2^26 and above), where fault-driven migration is expensive.
+- You need predictable kernel timing, for example when benchmarking or for real-time work.
+- The access pattern is known ahead of time and the data fits in GPU memory.
+
+**Letting CUDA manage memory is better when**:
+
+- The access pattern is irregular or data-dependent. Prefetching everything would move pages the kernel never uses, while on-demand migration moves only the touched pages.
+- The data is larger than GPU memory (oversubscription). Prefetching it all can thrash, while page faulting moves pages as needed.
+- It is a one-shot or small workload. For small arrays such as n = 1003, prefetch call overhead is comparable to the whole run, and there is little migration to save.
+- Developer time matters more than the last bit of speed, because unified memory needs no tuning.
+- CPU and GPU alternate on the same data and the next consumer is not known in advance.
 
 ### 5. SIMD vs SIMT Performance
 **Question:** Between SIMD and SIMT, which one is faster? Give some use cases in which one is better than the other.
