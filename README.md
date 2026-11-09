@@ -34,33 +34,33 @@ Store the result in vector $Z$. Display the execution time, the first 5, and the
 ## I. Program Output and Correctness Check
 
 **Variant 1: C/C++ Version**
-!(ver1out.png)
+!(images/ver1out.png)
 
 **Variant 2: No Prefetch, No Mem Advise**
-!(ver2out.png)
+!(images/ver2out.png)
 
 **Variant 3: With Prefetch, No Page Creation, No Mem Advise**
-!(ver3out.png)
+!(images/ver3out.png)
 
 **Variant 4: With Prefetch, With Page Creation, No Mem Advise**
-!(ver4out.png)
+!(images/ver4out.png)
 
 **Variant 5: With Prefetch, With Page Creation, With Mem Advise**
-!(ver5out.png)
+!(images/ver5out.png)
 
 ## II. NSYS Profiling
 
 **Variant 2: No Prefetch, No Mem Advise**
-!(ver2nsys.png)
+!(images/ver2nsys.png)
 
 **Variant 3: With Prefetch, No Page Creation, No Mem Advise**
-!(ver3nsys.png)
+!(images/ver3nsys.png)
 
 **Variant 4: With Prefetch, With Page Creation, No Mem Advise**
-!(ver4nsys.png)
+!(images/ver4nsys.png)
 
 **Variant 5: With Prefetch, With Page Creation, With Mem Advise**
-!(ver5nsys.png)
+!(images/ver5nsys.png)
 
 ---
 
